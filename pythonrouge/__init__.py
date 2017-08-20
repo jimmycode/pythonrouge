@@ -10,8 +10,7 @@ class PythonROUGE:
   MODEL_IDS = ["A", "B", "C", "D", "E", "F", "G"]
 
   def __init__(self,
-               ROUGE_path="",
-               data_path="",
+               ROUGE_dir="",
                n_gram=2,
                ROUGE_SU4=True,
                ROUGE_L=False,
@@ -31,8 +30,7 @@ class PythonROUGE:
                p=0.5):
     """
     Parameters:
-        ROUGE_path: absolute path of ROUGE-RELEASE-1.5.5 installation.
-        data_path: absolute data path of ROUGE-RELEASE-1.5.5 installation.
+        ROUGE_dir: absolute directory of ROUGE-RELEASE-1.5.5 installation.
         n_gram: Compute ROUGE-N up to max-ngram length will be computed.
         ROUGE_SU4: Compute ROUGE-SU4 measures unigram and skip-bigram
         separated by up to four words.
@@ -50,15 +48,11 @@ class PythonROUGE:
         favor: If True, set relative importance of ROUGE scores as blow.
         p: Relative importance of recall and precision ROUGE scores. Alpha -> 1 favors precision, Alpha -> 0 favors recall.
     """
-    if ROUGE_path:
-      self.ROUGE_path = ROUGE_path
-    else:
-      raise ValueError("ROUGE_path must be specified.")
+    if not ROUGE_dir:
+      raise ValueError("ROUGE_dir must be specified.")
 
-    if data_path:
-      self.data_path = data_path
-    else:
-      raise ValueError("data_path must be specified.")
+    self.ROUGE_path = os.path.join(ROUGE_dir, "ROUGE-1.5.5.pl")
+    self.data_path = os.path.join(ROUGE_dir, "data")
 
     self.n_gram = n_gram
     self.ROUGE_SU4 = ROUGE_SU4
