@@ -13,7 +13,7 @@ You can install pythonrouge in both ways
 python setup.py install
 
 # using pip
-pip install git+https://github.com/tagucci/pythonrouge.git
+pip install git+https://github.com/jimmycode/pythonrouge.git
 ```
 Then, you can use pythonrouge. If you don't have ROUGE package, I recommend you clone this repository to your local, and do "python setup.py install".
 
