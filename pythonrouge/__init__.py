@@ -78,6 +78,50 @@ class PythonROUGE:
     self.favor = favor
     self.p = p
 
+    self.rouge_cmd_tmp = self._get_rouge_cmd()  # command template
+
+  def _get_rouge_cmd(self):
+    ROUGE_path = os.path.abspath(self.ROUGE_path)
+    data_path = os.path.abspath(self.data_path)
+
+    rouge_cmd = ['perl', ROUGE_path, "-e", data_path, "-a"]
+    assert self.n_gram > 0, "n-gram should be positive."
+    rouge_cmd += "-n {}".format(self.n_gram).split()
+
+    if self.ROUGE_SU4:
+      rouge_cmd += "-2 4 -u".split()
+    if not self.ROUGE_L:
+      rouge_cmd.append("-x")
+    if self.ROUGE_W:
+      rouge_cmd.append("-w")
+      rouge_cmd.append(str(self.ROUGE_W_Weight))
+    if self.length_limit:
+      assert self.length > 0, "Length limit should be positive."
+      if self.word_level:
+        rouge_cmd += "-l {}".format(self.length).split()
+      else:
+        rouge_cmd += "-b {}".format(self.length).split()
+    if self.stemming:
+      rouge_cmd.append("-m")
+    if self.stopwords:
+      rouge_cmd.append("-s")
+    if self.use_cf:
+      rouge_cmd += "-c {}".format(self.cf).split()
+
+    if self.scoring_formula == "average":
+      rouge_cmd += "-f A".split()
+    elif self.scoring_formula:
+      rouge_cmd += "-f B".split()
+    else:
+      raise ValueError("Choose scoring formula between 'average' and 'best'.")
+
+    if self.resampling:
+      rouge_cmd += "-r {}".format(self.samples).split()
+    if self.favor:
+      rouge_cmd += "-p {}".format(self.p).split()
+
+    return rouge_cmd
+
   def convert_and_config(self, summary=[], reference=[], output_dir=""):
     """
     Convert summaries and references to ROUGE format and generate config file.
@@ -156,46 +200,7 @@ class PythonROUGE:
     return output_dir, config_path
 
   def run_rouge(self, config_path):
-    ROUGE_path = os.path.abspath(self.ROUGE_path)
-    data_path = os.path.abspath(self.data_path)
-
-    rouge_cmd = ['perl', ROUGE_path, "-e", data_path, "-a"]
-    assert self.n_gram > 0, "n-gram should be positive."
-    rouge_cmd += "-n {}".format(self.n_gram).split()
-
-    if self.ROUGE_SU4:
-      rouge_cmd += "-2 4 -u".split()
-    if not self.ROUGE_L:
-      rouge_cmd.append("-x")
-    if self.ROUGE_W:
-      rouge_cmd.append("-w")
-      rouge_cmd.append(str(self.ROUGE_W_Weight))
-    if self.length_limit:
-      assert self.length > 0, "Length limit should be positive."
-      if self.word_level:
-        rouge_cmd += "-l {}".format(self.length).split()
-      else:
-        rouge_cmd += "-b {}".format(self.length).split()
-    if self.stemming:
-      rouge_cmd.append("-m")
-    if self.stopwords:
-      rouge_cmd.append("-s")
-    if self.use_cf:
-      rouge_cmd += "-c {}".format(self.cf).split()
-
-    if self.scoring_formula == "average":
-      rouge_cmd += "-f A".split()
-    elif self.scoring_formula:
-      rouge_cmd += "-f B".split()
-    else:
-      raise ValueError("Choose scoring formula between 'average' and 'best'.")
-
-    if self.resampling:
-      rouge_cmd += "-r {}".format(self.samples).split()
-    if self.favor:
-      rouge_cmd += "-p {}".format(self.p).split()
-    rouge_cmd.append(config_path)
-
+    rouge_cmd = self.rouge_cmd_tmp + [config_path]
     output = subprocess.check_output(rouge_cmd, stderr=subprocess.STDOUT)
     return output
 
@@ -300,8 +305,18 @@ class PythonROUGE:
 
     return result
 
-  def evaluate(self, summary, reference):
+  def evaluate(self, summary, reference, to_dict=False):
+    """
+    Parameters:
+      summary: triple list.
+      reference: triple list.
+      to_dict: True if results need to be converted to dictionary.
+    """
     output_dir, config_path = self.convert_and_config(summary, reference)
     result = self.run_rouge(config_path)
     shutil.rmtree(output_dir)
+
+    if to_dict:
+      result = self.output_to_dict(result)
+
     return result

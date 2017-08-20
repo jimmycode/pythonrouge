@@ -18,5 +18,6 @@ setup(
         "Programming Language :: Python :: 2",
         "Topic :: Text Processing :: Linguistic"
     ],
+    install_requires=['tempfile', 'subprocess', 'shutil'],
     license="LICENCE.txt",
     long_description=open("README.md").read(),)
