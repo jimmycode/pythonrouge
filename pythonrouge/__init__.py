@@ -6,7 +6,7 @@ import subprocess
 import shutil
 
 
-class PythonRouge:
+class PythonROUGE:
   MODEL_IDS = ["A", "B", "C", "D", "E", "F", "G"]
 
   def __init__(self,
@@ -31,8 +31,8 @@ class PythonRouge:
                p=0.5):
     """
     Parameters:
-        ROUGE_path: directory of ROUGE-RELEASE-1.5.5 installation.
-        data_path: data path of ROUGE-RELEASE-1.5.5 installation.
+        ROUGE_path: absolute path of ROUGE-RELEASE-1.5.5 installation.
+        data_path: absolute data path of ROUGE-RELEASE-1.5.5 installation.
         n_gram: Compute ROUGE-N up to max-ngram length will be computed.
         ROUGE_SU4: Compute ROUGE-SU4 measures unigram and skip-bigram
         separated by up to four words.
@@ -53,12 +53,12 @@ class PythonRouge:
     if ROUGE_path:
       self.ROUGE_path = ROUGE_path
     else:
-      self.ROUGE_path = "./RELEASE-1.5.5/ROUGE-1.5.5.pl"
+      raise ValueError("ROUGE_path must be specified.")
 
     if data_path:
       self.data_path = data_path
     else:
-      self.data_path = "./RELEASE-1.5.5/data"
+      raise ValueError("data_path must be specified.")
 
     self.n_gram = n_gram
     self.ROUGE_SU4 = ROUGE_SU4
