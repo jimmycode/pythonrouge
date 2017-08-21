@@ -210,9 +210,9 @@ class PythonROUGE:
     n = 1
     for line in outputs:
       if self.ROUGE_SU4:
-        su_r_match = re.findall('A ROUGE-SU4 Average_R: ([0-9.]+)', line)
-        su_p_match = re.findall('A ROUGE-SU4 Average_P: ([0-9.]+)', line)
-        su_f_match = re.findall('A ROUGE-SU4 Average_F: ([0-9.]+)', line)
+        su_r_match = re.findall('ROUGE-SU4 Average_R: ([0-9.]+)', line)
+        su_p_match = re.findall('ROUGE-SU4 Average_P: ([0-9.]+)', line)
+        su_f_match = re.findall('ROUGE-SU4 Average_F: ([0-9.]+)', line)
         if su_r_match:
           if recall_only:
             result['ROUGE-SU4'] = float(su_r_match[0])
@@ -229,9 +229,9 @@ class PythonROUGE:
             elif su_f_match and not f_measure_only:
               result['ROUGE-SU4-F'] = float(su_f_match[0])
       if self.ROUGE_L:
-        l_r_match = re.findall('A ROUGE-L Average_R: ([0-9.]+)', line)
-        l_p_match = re.findall('A ROUGE-L Average_P: ([0-9.]+)', line)
-        l_f_match = re.findall('A ROUGE-L Average_F: ([0-9.]+)', line)
+        l_r_match = re.findall('ROUGE-L Average_R: ([0-9.]+)', line)
+        l_p_match = re.findall('ROUGE-L Average_P: ([0-9.]+)', line)
+        l_f_match = re.findall('ROUGE-L Average_F: ([0-9.]+)', line)
         if l_r_match:
           if recall_only:
             result['ROUGE-L'] = float(l_r_match[0])
@@ -249,13 +249,13 @@ class PythonROUGE:
               result['ROUGE-L-F'] = float(l_f_match[0])
       if self.ROUGE_W:
         w_r_match = re.findall(
-            'A ROUGE-W-{} Average_R: ([0-9.]+)'.format(self.ROUGE_W_Weight),
+            'ROUGE-W-{} Average_R: ([0-9.]+)'.format(self.ROUGE_W_Weight),
             line)
         w_p_match = re.findall(
-            'A ROUGE-W-{} Average_P: ([0-9.]+)'.format(self.ROUGE_W_Weight),
+            'ROUGE-W-{} Average_P: ([0-9.]+)'.format(self.ROUGE_W_Weight),
             line)
         w_f_match = re.findall(
-            'A ROUGE-W-{} Average_F: ([0-9.]+)'.format(self.ROUGE_W_Weight),
+            'ROUGE-W-{} Average_F: ([0-9.]+)'.format(self.ROUGE_W_Weight),
             line)
         if w_r_match:
           if recall_only:
