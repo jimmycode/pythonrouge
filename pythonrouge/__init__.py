@@ -277,9 +277,9 @@ class PythonROUGE:
             elif w_f_match and not f_measure_only:
               result['ROUGE-W-{}-F'.format(self.ROUGE_W_Weight)] = float(
                   w_f_match[0])
-      r_match = re.findall('A ROUGE-{} Average_R: ([0-9.]+)'.format(n), line)
-      p_match = re.findall('A ROUGE-{} Average_P: ([0-9.]+)'.format(n), line)
-      f_match = re.findall('A ROUGE-{} Average_F: ([0-9.]+)'.format(n), line)
+      r_match = re.findall('ROUGE-{} Average_R: ([0-9.]+)'.format(n), line)
+      p_match = re.findall('ROUGE-{} Average_P: ([0-9.]+)'.format(n), line)
+      f_match = re.findall('ROUGE-{} Average_F: ([0-9.]+)'.format(n), line)
       if r_match:
         if recall_only:
           result['ROUGE-{}'.format(n)] = float(r_match[0])
