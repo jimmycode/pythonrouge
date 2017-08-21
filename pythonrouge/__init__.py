@@ -5,6 +5,9 @@ from tempfile import mkdtemp
 import subprocess
 import shutil
 
+#TODO(jimmycode): current implementation do not support multiple systems.
+#                 May add multi-system summary support in the future.
+
 
 class PythonROUGE:
   MODEL_IDS = ["A", "B", "C", "D", "E", "F", "G"]
@@ -18,9 +21,9 @@ class PythonROUGE:
                ROUGE_W_Weight=1.2,
                stemming=True,
                stopwords=False,
+               length_limit=False,
+               length=75,
                word_level=False,
-               length_limit=True,
-               length=100,
                use_cf=False,
                cf=95,
                scoring_formula="average",
@@ -37,9 +40,9 @@ class PythonROUGE:
         ROUGE_L: Calculate ROUGE-L.
         stemming: Stem both model and system summaries using Porter stemmer before computing various statistics.
         stopwords: Remove stopwords in model and system summaries before computing various statistics.
-        word_level: Evaluate based on words. If False, rouge evaluates the system summary based on bytes.
         length_limit: If you want to limit the length of the system summary, set True.
         length: Limit first N words/bytes of the system summary.
+        word_level: Evaluate based on words. If False, rouge evaluates the system summary based on bytes.
         use_cf: If True, you can use confidence interval to compute.
         cf: Confidence interval (default is 95%)
         scoring_formula: 'average' is calculated by model average. 'best' is calculated by best model.
@@ -104,7 +107,7 @@ class PythonROUGE:
 
     if self.scoring_formula == "average":
       rouge_cmd += "-f A".split()
-    elif self.scoring_formula:
+    elif self.scoring_formula == "best":
       rouge_cmd += "-f B".split()
     else:
       raise ValueError("Choose scoring formula between 'average' and 'best'.")
@@ -249,14 +252,11 @@ class PythonROUGE:
               result['ROUGE-L-F'] = float(l_f_match[0])
       if self.ROUGE_W:
         w_r_match = re.findall(
-            'ROUGE-W-{} Average_R: ([0-9.]+)'.format(self.ROUGE_W_Weight),
-            line)
+            'ROUGE-W-{} Average_R: ([0-9.]+)'.format(self.ROUGE_W_Weight), line)
         w_p_match = re.findall(
-            'ROUGE-W-{} Average_P: ([0-9.]+)'.format(self.ROUGE_W_Weight),
-            line)
+            'ROUGE-W-{} Average_P: ([0-9.]+)'.format(self.ROUGE_W_Weight), line)
         w_f_match = re.findall(
-            'ROUGE-W-{} Average_F: ([0-9.]+)'.format(self.ROUGE_W_Weight),
-            line)
+            'ROUGE-W-{} Average_F: ([0-9.]+)'.format(self.ROUGE_W_Weight), line)
         if w_r_match:
           if recall_only:
             result['ROUGE-W-{}'.format(self.ROUGE_W_Weight)] = float(
