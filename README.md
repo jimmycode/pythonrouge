@@ -14,6 +14,9 @@ python setup.py install
 
 # using pip
 pip install git+https://github.com/jimmycode/pythonrouge.git
+
+# using pip to upgrade
+pip install git+https://github.com/jimmycode/pythonrouge.git --upgrade
 ```
 Then, you can use pythonrouge. If you don't have ROUGE package, I recommend you clone this repository to your local, and do "python setup.py install".
 
