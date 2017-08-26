@@ -299,7 +299,12 @@ class PythonROUGE:
 
     return result
 
-  def evaluate(self, summary, reference, to_dict=False):
+  def evaluate(self,
+               summary,
+               reference,
+               to_dict=False,
+               recall_only=False,
+               f_measure_only=False):
     """
     Parameters:
       summary: triple list.
@@ -311,6 +316,6 @@ class PythonROUGE:
     shutil.rmtree(output_dir)
 
     if to_dict:
-      result = self.output_to_dict(result)
+      result = self.output_to_dict(result, recall_only, f_measure_only)
 
     return result
