@@ -119,7 +119,7 @@ class PythonROUGE:
 
     return rouge_cmd
 
-  def convert_and_config(self, summary=[], reference=[], output_dir=""):
+  def convert_and_config(self, summary=[], reference=[], output_dir="", temp_dir=None):
     """
     Convert summaries and references to ROUGE format and generate config file.
 
@@ -140,7 +140,7 @@ class PythonROUGE:
     assert len(summary) == len(
         reference), "Size of summary and refernece is different."
     if not output_dir:
-      output_dir = mkdtemp()
+      output_dir = mkdtemp(dir=temp_dir)
     elif not os.path.exists(output_dir):
       os.mkdir(output_dir)
 
@@ -304,14 +304,15 @@ class PythonROUGE:
                reference,
                to_dict=False,
                recall_only=False,
-               f_measure_only=False):
+               f_measure_only=False,
+               temp_dir=None):
     """
     Parameters:
       summary: triple list.
       reference: triple list.
       to_dict: True if results need to be converted to dictionary.
     """
-    output_dir, config_path = self.convert_and_config(summary, reference)
+    output_dir, config_path = self.convert_and_config(summary, reference, temp_dir=temp_dir)
     result = self.run_rouge(config_path)
     shutil.rmtree(output_dir)
 
